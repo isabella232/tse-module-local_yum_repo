@@ -10,7 +10,7 @@ return_code=0
 for file in "${sourcedir}/"*.repo; do
 	newfile="${targetdir}/$(basename $file)"
 	cur_content=$(cat $newfile 2>/dev/null || true)
-	new_content=$(sed "s/\\\$releasever/$3/g" $file)
+	new_content=$(sed "s/\\\$releasever/$releasever/g" $file)
 	if [[ "$cur_content" = "$new_content" ]]; then
 		continue
 	elif [[ "$mode" = "enforce" ]]; then
