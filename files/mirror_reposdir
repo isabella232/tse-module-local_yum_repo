@@ -1,0 +1,26 @@
+#!/bin/bash
+
+sourcedir='/etc/yum.repos.d'
+targetdir=$1
+releasever=$2
+mode=$3
+
+return_code=0
+
+for file in "${sourcedir}/"*.repo; do
+	newfile="${targetdir}/$(basename $file)"
+	cur_content=$(cat $newfile 2>/dev/null || true)
+	new_content=$(sed "s/\\\$releasever/$3/g" $file)
+	if [[ "$cur_content" = "$new_content" ]]; then
+		continue
+	elif [[ "$mode" = "enforce" ]]; then
+		cat > "$newfile" <<-EOF
+			$new_content
+		EOF
+	else
+		return_code=2
+		break
+	fi
+done
+
+exit $return_code
