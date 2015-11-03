@@ -1,6 +1,6 @@
 {
   "name": "tse-local_yum_repo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Puppet Labs TSE Team",
   "license": "Apache-2.0",
   "summary": "Mirror selected rpm packages from configured yum repositories to a local repository",
