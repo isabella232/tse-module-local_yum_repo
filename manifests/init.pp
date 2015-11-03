@@ -6,10 +6,10 @@ define local_yum_repo (
   assert_private()
   require local_yum_repo::setup
 
-  $confdir        = $local_yum_repo::setup::confdir
-  $safe_directory = shellquote($directory)
+  $confdir         = $local_yum_repo::setup::confdir
+  $shellsafe_title = shellquote($title)
 
-  $conffile_content = epp("local_yum_repo/yum.conf.epp", {
+  $conffile_content = epp('local_yum_repo/yum.conf.epp', {
     'reposdir'   => $reposdir,
     'releasever' => $releasever,
   })
@@ -39,13 +39,12 @@ define local_yum_repo (
     unless  => "${confdir}/mirror_reposdir ${reposdir} ${releasever} noop",
   }
 
-  # TODO: replace refreshonly=true with an onlyif or unless to compare the
-  # ctime of each rpm file to the repodata xml.
   exec { "${title} createrepo":
-    path        => '/usr/bin:/bin',
-    cwd         => $title,
-    command     => "createrepo ${safe_directory}",
-    refreshonly => true,
+    command  => "createrepo ${shellsafe_title}",
+    unless   => file('local_yum_repo/repomd_still_valid'),
+    provider => shell,
+    path     => '/usr/bin:/bin',
+    cwd      => $title,
   }
 
 }

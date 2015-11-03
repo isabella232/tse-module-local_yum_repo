@@ -1,0 +1,8 @@
+set -e;
+
+ctime_repomod=$(stat -c %Z 'repodata/repomd.xml');
+
+for rpm in *.rpm; do
+  ctime_rpm=$(stat -c %Z $rpm);
+  [ "$ctime_rpm" -le "$ctime_repomod" ];
+done;
